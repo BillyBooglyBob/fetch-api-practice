@@ -1,9 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body></body>
+  <body>
+    <input type="text" id="gif-search-input" placeholder="Find your fat cat">
+    <button class="fetch-new-image">Get new image</button>
+    <script>
+      function checkSearch() {
+        const searchValue = document.querySelector('#gif-search-input').value;
+        displayNewImage(searchValue);
+      }
+
+      function fetchNewImage(searchInput) {
+        return fetch(
+          "https://api.giphy.com/v1/gifs/translate?api_key=pIQai4F0HkZBkWNNipsR2Mpb4xDIUBXm&s=" + searchInput,
+          { mode: "cors" }
+        )
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (response) {
+            const imgURL = response.data.images.original.url;
+            return imgURL;
+          });
+      }
+
+      function displayNewImage(searchInput) {
+        let searchValue = "cats";
+        
+        if (searchInput != "") {
+           searchValue = searchInput;
+        }
+
+        fetchNewImage(searchValue).then(function (imgURL) {
+          const newImg = document.createElement('img');
+          newImg.src = imgURL;
+          document.body.appendChild(newImg);
+        });
+      }
+
+      const getNewImageButton = document.querySelector('.fetch-new-image');
+      getNewImageButton.addEventListener('click', displayNewImage);
+
+      document.getElementById("gif-search-input").addEventListener("keyup", () => {
+        if (event.key === 'Enter') {
+          checkSearch();
+        }
+      })
+
+    </script>
+  </body>
 </html>
